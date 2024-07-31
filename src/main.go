@@ -17,10 +17,12 @@ func main() {
 	defer db.Close()
 
 	hamburguesaService := services.NewHamburguesaService(db)
+	pedidosService := services.NewPedidoServices(db)
 
 	r := gin.Default()
 
 	routes.SetupHamburguesaRoutes(r, hamburguesaService)
+	routes.SetupPedidoRoutes(r, pedidosService)
 
 	r.Run()
 
