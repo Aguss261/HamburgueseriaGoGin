@@ -18,11 +18,13 @@ func main() {
 
 	hamburguesaService := services.NewHamburguesaService(db)
 	pedidosService := services.NewPedidoServices(db)
+	userService := services.NewUserServices(db)
 
 	r := gin.Default()
 
 	routes.SetupHamburguesaRoutes(r, hamburguesaService)
 	routes.SetupPedidoRoutes(r, pedidosService)
+	routes.SetupUserRoutes(r, userService)
 
 	r.Run()
 
