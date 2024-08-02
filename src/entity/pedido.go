@@ -1,12 +1,14 @@
 package entity
 
+import "time"
+
 type Pedido struct {
-	Id           int           `json:"pedido_id"`
+	Id           int           `json:"pedido_id,omitempty"`
 	UserId       int           `json:"user_id"`
 	Direccion    string        `json:"direccion"`
-	Price        float64       `json:"price"`
-	State        string        `json:"state"`
+	Price        float32       `json:"price,omitempty" `
+	State        string        `json:"state,omitempty"`
 	Hamburguesas []Hamburguesa `json:"hamburguesas"`
-	Hora         string        `json:"hora"`
-	Fecha        string        `json:"fecha"`
+	Hora         time.Time     `json:"hora,omitempty"`
+	Fecha        time.Time     `json:"fecha,omitempty"`
 }

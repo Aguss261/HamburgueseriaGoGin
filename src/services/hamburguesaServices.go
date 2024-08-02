@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type HamburguesaServices struct {
@@ -134,9 +135,17 @@ func (hs *HamburguesaServices) CreateHamburguesa(hamburguesa *entity.Hamburguesa
 }
 
 func (hs *HamburguesaServices) DeleteHamburguesaByiD(id int) error {
-	_, err := hs.DB.Exec("DELETE FROM hamburguesa WHERE id = ?", id)
+	result, err := hs.DB.Exec("DELETE FROM hamburguesa WHERE id = ?", id)
 	if err != nil {
 		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("ningúna hamburguesa encontrada con el id %d", id)
 	}
 	return nil
 }
