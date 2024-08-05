@@ -3,6 +3,7 @@ package controller
 import (
 	"ApiRestaurant/src/entity"
 	"ApiRestaurant/src/services"
+	"ApiRestaurant/src/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -32,25 +33,30 @@ func (ps *PedidoController) GetPedidoById(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	pedidos, err := ps.PedidoServices.GetById(int(id))
+	userId := utils.IdXJwt(c)
+	if userId == -1 {
+		return
+	}
+	pedidos, err := ps.PedidoServices.GetById(int(id), userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"data": pedidos})
 }
 
 func (ps *PedidoController) GetPedidoByUserId(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	id := utils.IdXJwt(c)
+	if id == -1 {
 		return
 	}
-	pedidos, err2 := ps.PedidoServices.GetByUserId(int(id))
+	pedidos, err2 := ps.PedidoServices.GetByUserId(id)
 	if err2 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err2.Error()})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{"data": pedidos})
 }
 
@@ -76,6 +82,11 @@ func (ps *PedidoController) CreatePedido(c *gin.Context) {
 	if err := c.ShouldBindJSON(&pedido); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+	id := utils.IdXJwt(c)
+	if id == -1 {
+		return
+	}
+	pedido.UserId = id
 	pedido.Hora = time.Now()
 	pedido.Fecha = time.Now()
 	pedido.State = "Pendiente"
@@ -93,7 +104,11 @@ func (ps *PedidoController) DeletePedido(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Hamburguesa id invalido"})
 		return
 	}
-	err2 := ps.PedidoServices.DeletePedido(int(id))
+	userId := utils.IdXJwt(c)
+	if userId == -1 {
+		return
+	}
+	err2 := ps.PedidoServices.DeletePedido(int(id), userId)
 	if err2 != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err2.Error()})
 		return
@@ -113,9 +128,16 @@ func (ps *PedidoController) EditPedido(c *gin.Context) {
 
 	pedido.Price = ps.calcularPrecio(&pedido.Hamburguesas)
 
-	if err := ps.PedidoServices.UpdatePedido(int(id), pedido); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	userId := utils.IdXJwt(c)
+	if userId == -1 {
+		return
 	}
+
+	if err := ps.PedidoServices.UpdatePedido(int(id), pedido, userId); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }
 
