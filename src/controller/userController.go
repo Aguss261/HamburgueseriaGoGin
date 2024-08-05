@@ -45,13 +45,7 @@ func (uc *UserController) Register(c *gin.Context) {
 		return
 	}
 
-	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
-		return
-	}
-
-	userID, err := uc.UserServices.CreateUser(username, email, string(passwordHash), direccion)
+	userID, err := uc.UserServices.CreateUser(username, email, password, direccion)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
 		return

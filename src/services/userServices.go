@@ -88,7 +88,6 @@ func (us *UserService) CreateAdmin() error {
 		return err
 	}
 
-	// Insertar usuario admin
 	_, err = tx.Exec(`
         INSERT INTO usuario (username, email, password_hash, direccion)
         VALUES ('admin', 'admin@example.com', 'admin', 'casa admin')`)

@@ -7,18 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupHamburguesaRoutes(router *gin.Engine, hamburguesaServices *services.HamburguesaServices) {
+func SetupHamburguesaRoutes(router *gin.Engine, hamburguesaServices *services.HamburguesaServices, userServices *services.UserService) {
 	hamburguesaController := controller.NewHamburguesaController(hamburguesaServices)
 
-	// Rutas protegidas por JWT
 	protected := router.Group("/")
 	protected.Use(middleware.JWTRequired())
+	admin := router.Group("/")
+	admin.Use(middleware.AdminRequired(userServices))
 
-	protected.GET("/hamburguesas", hamburguesaController.GetAllHamburguesas)
-	protected.GET("/hamburguesas/id/:id", hamburguesaController.GetHamburguesaById)
-	protected.GET("/hamburguesas/nombre/:name", hamburguesaController.GetHamburguesaByName)
+	router.GET("/hamburguesas", hamburguesaController.GetAllHamburguesas)
+	router.GET("/hamburguesas/id/:id", hamburguesaController.GetHamburguesaById)
+	router.GET("/hamburguesas/nombre/:name", hamburguesaController.GetHamburguesaByName)
 	protected.POST("/hamburguesas", hamburguesaController.CreateHamburguesa)
-	protected.DELETE("/hamburguesas/:id", hamburguesaController.DeleteHamburguesaById)
-	protected.PUT("/hamburguesas/:id", hamburguesaController.EditHamburguesaById)
-	protected.GET("/hamburguesas/price/:price", hamburguesaController.GetHamburguesaByPrice)
+	admin.DELETE("/hamburguesas/:id", hamburguesaController.DeleteHamburguesaById)
+	admin.PUT("/hamburguesas/:id", hamburguesaController.EditHamburguesaById)
+	router.GET("/hamburguesas/price/:price", hamburguesaController.GetHamburguesaByPrice)
 }

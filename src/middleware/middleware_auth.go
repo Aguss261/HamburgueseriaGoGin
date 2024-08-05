@@ -22,13 +22,20 @@ func JWTRequired() gin.HandlerFunc {
 
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-		_, err := utils.DecodeToken(tokenString)
+		userID, err := utils.DecodeToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
 
+		if userID == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID is empty in token"})
+			c.Abort()
+			return
+		}
+
+		c.Set("user_id", userID)
 		c.Next()
 	}
 }

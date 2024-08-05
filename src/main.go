@@ -22,8 +22,8 @@ func main() {
 
 	r := gin.Default()
 
-	routes.SetupHamburguesaRoutes(r, hamburguesaService)
-	routes.SetupPedidoRoutes(r, pedidosService)
+	routes.SetupHamburguesaRoutes(r, hamburguesaService, userService)
+	routes.SetupPedidoRoutes(r, pedidosService, userService)
 	routes.SetupUserRoutes(r, userService)
 
 	r.Run()

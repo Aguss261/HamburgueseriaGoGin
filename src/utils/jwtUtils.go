@@ -17,14 +17,12 @@ var (
 
 // GenerateToken crea un nuevo token JWT para el usuario especificado
 func GenerateToken(userID string) (string, error) {
-	// Crear las reclamaciones del token
 	claims := &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 		IssuedAt:  time.Now().Unix(),
-		Subject:   userID,
+		Subject:   userID, // Asegúrate de que userID sea una cadena
 	}
 
-	// Crear el token JWT
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
@@ -34,7 +32,6 @@ func GenerateToken(userID string) (string, error) {
 	return tokenString, nil
 }
 
-// DecodeToken decodifica y valida el token JWT
 func DecodeToken(tokenString string) (string, error) {
 	claims := &jwt.StandardClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
