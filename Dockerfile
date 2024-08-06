@@ -1,11 +1,14 @@
 # Usa una imagen base de Go
 FROM golang:1.22
 
+# Configura el directorio de trabajo
 WORKDIR /app
 
+# Copia los archivos del módulo Go
 COPY go.mod go.sum ./
 
-RUN go mod tidy
+# Descarga las dependencias
+RUN go mod download
 
 # Copia el código fuente
 COPY src/ .
