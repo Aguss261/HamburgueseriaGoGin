@@ -1,23 +1,23 @@
 # Usa una imagen base de Go
 FROM golang:1.22
 
-# Configura el directorio de trabajo
+# Configura el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia los archivos del módulo Go
-COPY go.mod go.sum ./
+# Copia los archivos de definición de módulos
+COPY src/go.mod src/go.sum ./
 
 # Descarga las dependencias
 RUN go mod download
 
-# Copia el código fuente
+# Copia el código fuente al contenedor
 COPY src/ .
 
-# Construye la aplicación
+# Compila el proyecto
 RUN go build -o main .
 
 # Expone el puerto en el que la aplicación escuchará
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
+# Define el comando por defecto para ejecutar la aplicación
 CMD ["./main"]
