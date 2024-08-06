@@ -5,7 +5,7 @@ FROM golang:1.22
 WORKDIR /app
 
 # Copia los archivos de definición de módulos
-COPY src/go.mod src/go.sum ./
+COPY go.mod go.sum ./
 
 # Descarga las dependencias
 RUN go mod download
