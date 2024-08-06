@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: goapp-db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: api_flask
+    ports:
+      - "3306:3306"
+    networks:
+      - mynetwork
+
+  app:
+    build: .
+    container_name: goapp-web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    environment:
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: api_flask
+
+networks:
+  mynetwork:
+    driver: bridge
