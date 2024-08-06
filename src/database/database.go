@@ -4,25 +4,20 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"os"
 )
 
 var db *sql.DB
 
 func Connect() (*sql.DB, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return nil, err
-	}
-	dns := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_NAME"))
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		os.Getenv("MYSQL_USER"),
+		os.Getenv("MYSQL_PASSWORD"),
+		os.Getenv("MYSQL_HOST"),
+		"3306", // puerto de MySQL, puedes usar el puerto por defecto
+		os.Getenv("MYSQL_DATABASE"))
 
-	db, err := sql.Open("mysql", dns)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}

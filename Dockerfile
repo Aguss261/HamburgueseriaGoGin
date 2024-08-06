@@ -11,13 +11,14 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copia el código fuente al contenedor
-COPY src/ .
+COPY src/ ./src
+
+WORKDIR /app/src
 
 # Compila el proyecto
 RUN go build -o main .
 
-# Expone el puerto en el que la aplicación escuchará
-EXPOSE 8080
+
 
 # Define el comando por defecto para ejecutar la aplicación
 CMD ["./main"]
