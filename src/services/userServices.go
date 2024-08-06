@@ -87,32 +87,39 @@ func (us *UserService) CreateAdmin() error {
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// Encriptar la contraseña antes de almacenarla
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
 
 	_, err = tx.Exec(`
         INSERT INTO usuario (username, email, password_hash, direccion)
-        VALUES ('admin', 'admin@example.com', 'admin', 'casa admin')`)
+        VALUES ('admin', 'admin@example.com', ?, 'casa admin')`, passwordHash)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	var roleID int
-	err = us.DB.QueryRow("SELECT id FROM roles WHERE nombre = 'admin'").Scan(&roleID)
+	err = tx.QueryRow("SELECT id FROM roles WHERE nombre = 'admin'").Scan(&roleID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	var userID int
-	err = us.DB.QueryRow("SELECT id FROM usuario WHERE username = 'admin'").Scan(&userID)
+	err = tx.QueryRow("SELECT id FROM usuario WHERE username = 'admin'").Scan(&userID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
 	_, err = tx.Exec("INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (?, ?)", userID, roleID)
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
