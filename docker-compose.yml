@@ -2,15 +2,17 @@ version: '3.9'
 
 services:
   db:
-    image: mysql:8.0  # Actualiza a una versión más reciente
+    image: mysql:8.0
     container_name: apiflask-db
     environment:
       MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: api_flask  # Puedes definir una base de datos por defecto si lo deseas
+      MYSQL_DATABASE: api_flask
     ports:
       - "3306:3306"
     networks:
       - mynetwork
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
   app:
     build:
