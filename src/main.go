@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal("Error conenctandote a la base de datos:", err)
@@ -19,7 +18,6 @@ func main() {
 	hamburguesaService := services.NewHamburguesaService(db)
 	pedidosService := services.NewPedidoServices(db)
 	userService := services.NewUserServices(db)
-
 	r := gin.Default()
 
 	routes.SetupHamburguesaRoutes(r, hamburguesaService, userService)

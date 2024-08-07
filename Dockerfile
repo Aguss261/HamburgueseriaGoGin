@@ -19,6 +19,5 @@ WORKDIR /app/src
 RUN go build -o main .
 
 
-
 # Define el comando por defecto para ejecutar la aplicación
 CMD ["./main"]
