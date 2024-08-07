@@ -9,7 +9,6 @@ import (
 )
 
 func main() {
-
 	db, err := database.Connect()
 	if err != nil {
 		log.Fatal("Error conenctandote a la base de datos:", err)

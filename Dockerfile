@@ -13,16 +13,11 @@ RUN go mod download
 # Copia el código fuente al contenedor
 COPY src/ ./src
 
-COPY wait-for-it.sh ./wait-for-it.sh
-
 WORKDIR /app/src
 
 # Compila el proyecto
 RUN go build -o main .
 
 
-RUN chmod +x /app/wait-for-it.sh
-
-
 # Define el comando por defecto para ejecutar la aplicación
-CMD ["/app/wait-for-it.sh", "db:3306", "--", "./main"]
+CMD ["./main"]
