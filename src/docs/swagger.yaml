@@ -1,0 +1,336 @@
+basePath: /
+definitions:
+  entity.ErrorResponse:
+    description: Estructura de respuesta para los errores
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  entity.Hamburguesa:
+    properties:
+      descripcion:
+        type: string
+      id:
+        type: integer
+      imgUrl:
+        type: string
+      ingredientes:
+        $ref: '#/definitions/entity.Ingrediente'
+      nombre:
+        type: string
+      price:
+        type: number
+    required:
+    - descripcion
+    - imgUrl
+    - ingredientes
+    - nombre
+    - price
+    type: object
+  entity.Ingrediente:
+    properties:
+      bacon:
+        type: integer
+      cebolla:
+        type: integer
+      huevo:
+        type: integer
+      lechuga:
+        type: integer
+      pepino:
+        type: integer
+      tomate:
+        type: integer
+    type: object
+  entity.SuccessResponse:
+    description: Estructura de respuesta para solicitudes exitosas
+    properties:
+      data: {}
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server.
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /hamburguesas:
+    get:
+      description: Obtiene todas las hamburguesas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Hamburguesa'
+                  type: array
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Obtener todas las hamburguesas
+      tags:
+      - hamburguesas
+    post:
+      consumes:
+      - application/json
+      description: Crea una nueva hamburguesa con los datos proporcionados
+      parameters:
+      - description: Datos de la hamburguesa
+        in: body
+        name: hamburguesa
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Hamburguesa'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Hamburguesa'
+              type: object
+        "400":
+          description: Datos inválidos
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: 'Unauthorized: Invalid user ID'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: 'Forbidden: Access denied'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Crear nueva hamburguesa
+      tags:
+      - hamburguesas
+  /hamburguesas/{id}:
+    delete:
+      description: Elimina una hamburguesa basada en el ID proporcionado
+      parameters:
+      - description: ID de la hamburguesa
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "400":
+          description: ID inválido
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: 'Unauthorized: Invalid user ID'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: 'Forbidden: Access denied'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Hamburguesa no encontrada
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Eliminar hamburguesa por ID
+      tags:
+      - hamburguesas
+    put:
+      description: Actualiza una hamburguesa existente basada en el ID proporcionado
+        y los datos JSON enviados
+      parameters:
+      - description: ID de la hamburguesa
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Datos de la hamburguesa a actualizar
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Hamburguesa'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: JSON inválido
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: 'Unauthorized: Invalid user ID'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: 'Forbidden: Access denied'
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Hamburguesa no encontrada
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: Actualizar hamburguesa por ID
+      tags:
+      - hamburguesas
+  /hamburguesas/id/{id}:
+    get:
+      description: Obtiene una hamburguesa basada en el ID proporcionado
+      parameters:
+      - description: ID de la hamburguesa
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Hamburguesa'
+              type: object
+        "400":
+          description: ID invalido
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Hamburguesa no encontrada
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Obtener hamburguesa por ID
+      tags:
+      - hamburguesas
+  /hamburguesas/nombre/{name}:
+    get:
+      description: Obtiene una hamburguesa basada en el nombre proporcionado
+      parameters:
+      - description: Nombre de la hamburguesa
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Hamburguesa'
+              type: object
+        "400":
+          description: Nombre inválido
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Hamburguesa no encontrada
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Obtener hamburguesa por nombre
+      tags:
+      - hamburguesas
+  /hamburguesas/price/{price}:
+    get:
+      description: Obtiene una lista de hamburguesas cuyo precio es mayor al proporcionado
+      parameters:
+      - description: Precio mínimo de la hamburguesa
+        in: path
+        name: price
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/entity.SuccessResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Hamburguesa'
+                  type: array
+              type: object
+        "400":
+          description: Precio inválido
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "500":
+          description: Error interno del servidor
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: Obtener hamburguesas por precio
+      tags:
+      - hamburguesas
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

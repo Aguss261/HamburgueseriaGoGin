@@ -55,7 +55,7 @@ func (hs *HamburguesaServices) GetById(id int) (*entity.Hamburguesa, error) {
 	err := hs.DB.QueryRow("SELECT * FROM hamburguesa WHERE id = ?", id).Scan(&hamburguesa.Id, &hamburguesa.Nombre, &hamburguesa.Price, &hamburguesa.Descripcion, &hamburguesa.ImgUrl, &ingredienteJSON)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, errors.New("hamburguesa not found")
+			return nil, errors.New("hamburguesa no encontrada")
 		}
 		return nil, err
 	}

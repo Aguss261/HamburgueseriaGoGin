@@ -1,3 +1,4 @@
+// main.go
 package main
 
 import (
@@ -6,11 +7,23 @@ import (
 	"ApiRestaurant/src/services"
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
 	"log"
 	"time"
 )
 
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server.
+// @host localhost:8080
+// @BasePath /
+// @securityDefinitions.apiKey Bearer
+// @in header
+// @name Authorization
+// @security Bearer
 func main() {
+
 	var db *sql.DB
 	var err error
 	maxRetries := 10
@@ -32,6 +45,7 @@ func main() {
 		break
 	}
 	defer db.Close()
+
 	hamburguesaService := services.NewHamburguesaService(db)
 	pedidosService := services.NewPedidoServices(db)
 	userService := services.NewUserServices(db)
@@ -41,6 +55,7 @@ func main() {
 	routes.SetupPedidoRoutes(r, pedidosService, userService)
 	routes.SetupUserRoutes(r, userService)
 
-	r.Run()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	r.Run()
 }
